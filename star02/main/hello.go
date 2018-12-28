@@ -20,6 +20,6 @@ func main() {
 	result := utils.CheckRow(val, 20, 6)
 	fmt.Println(result)
 
-	num, index, err := utils.UpGrid(val, 20, 2)
-	fmt.Println(num, index, err)
+	num := utils.CheckPalace(val, 20, 2);
+	fmt.Println(num)
 }
