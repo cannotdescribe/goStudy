@@ -39,7 +39,21 @@ func CheckPalace(arr [81]int, index int, checkName int) bool{
 	y := index / 9
 	initX := x/3 * 3
 	initY := y/3 * 3
-	fmt.Println(x,y, initX, initY)
+	for i:=0;i<3;i++{
+		if(arr[x+initY*3 +initX +i] == checkName){
+			return true;
+		}
+	}
+	for i:=0;i<3;i++{
+		if(arr[x+(initY+1)*3 +initX +i] == checkName){
+			return true;
+		}
+	}
+	for i:=0;i<3;i++{
+		if(arr[x+(initY+2)*3 +initX +i] == checkName){
+			return true;
+		}
+	}
 	return false;
 }
 
