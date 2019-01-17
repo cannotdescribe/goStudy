@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"go_code/star02/myError"
 )
 

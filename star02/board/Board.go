@@ -1,7 +1,7 @@
-package main
+package board
 
 import (
-	"go_code/star02/utils"
+//	"go_code/star02/utils"
 )
 
 type Board struct {
@@ -10,7 +10,7 @@ type Board struct {
 	flag int 
 }
 
-func (Board bo) CheckCell(index int, checkName int) bool{
+func (bo Board) CheckCell(index int, checkName int) bool{
 	x := index % 9
 	for i:=0;i<9;i++{
 		if(bo.arr[i*9+x] == checkName){
@@ -20,7 +20,7 @@ func (Board bo) CheckCell(index int, checkName int) bool{
 	return false
 }
 
-func (Board bo) CheckRow(index int, checkName int) bool{
+func (bo Board) CheckRow(index int, checkName int) bool{
 	y := index / 9
 	az := bo.arr[y*9 : (y+1)*9]
 	for i:=0;i<len(az);i++{
@@ -31,7 +31,7 @@ func (Board bo) CheckRow(index int, checkName int) bool{
 	return false
 }
 
-func (Board bo) CheckPalace(index int, checkName int) bool{
+func (bo Board) CheckPalace(index int, checkName int) bool{
 	x := index % 9
 	y := index / 9
 	initX := x/3 * 3
@@ -54,6 +54,6 @@ func (Board bo) CheckPalace(index int, checkName int) bool{
 	return false;
 }
 
-func (Board bo) Check(index int, checkName int) bool{
+func (bo Board) Check(index int, checkName int) bool{
 	return bo.CheckCell(index, checkName) &&  bo.CheckRow(index, checkName) &&  bo.CheckPalace(index, checkName)
 }
