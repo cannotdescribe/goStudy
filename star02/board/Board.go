@@ -1,19 +1,21 @@
 package board
 
 import (
-//	"go_code/star02/utils"
+	"fmt"
 )
 
 type Board struct {
-	arr [81]int
+	arr []int
 	//变化位
 	flag int 
+	stepContainer *StepContainer
 }
 
-func NewBoard(arr [81]int, flag int) *Board{
+func NewBoard(arr []int, flag int, stepContainer *StepContainer) *Board{
 	return &Board{
 		arr: arr,
 		flag: flag,
+		stepContainer: stepContainer,
 	}
 }
 
@@ -63,6 +65,41 @@ func (bo Board) CheckPalace(checkName int) bool{
 
 func (bo Board) Check(checkName int) bool{
 	return bo.CheckCell(checkName) &&  bo.CheckRow(checkName) &&  bo.CheckPalace(checkName)
+}
+
+func (bo Board) CopyBoard() *Board{
+	copyArray := make([]int, 81)
+	copy(copyArray, bo.arr)
+	return &Board{
+		arr: copyArray,
+		flag: bo.flag,
+	}
+}
+
+func (bo Board) Guess() (bool, *Board){
+	fmt.Println(bo)
+	for i:=bo.arr[bo.flag]+1; i<=9; i++ {
+		if(bo.Check(i)){
+			copyBoard := bo.CopyBoard()
+			copyBoard.arr[bo.flag] = i
+			flag := bo.flag+1
+			for;bo.stepContainer.isInitData(flag);{
+				flag++
+			}
+			copyBoard.flag = flag
+			return true, copyBoard
+		}
+	}
+	return false, &bo
+}
+
+func (bo Board) IsLast() bool{
+	for i:=bo.arr[bo.flag]+1; i<=9; i++ {
+		if(bo.Check(i)){
+			return true
+		}
+	}
+	return false
 }
 
 func (bo Board) getIndex() int{

@@ -2,6 +2,7 @@ package board
 
 import (
 	"go_code/star02/utils"
+	"fmt"
 )
 
 type StepContainer struct{
@@ -9,15 +10,13 @@ type StepContainer struct{
 	flag *utils.Set
 }
 
-func NewStepContainer(sodu [81]int) *StepContainer{
+func NewStepContainer(sodu []int) *StepContainer{
 	stepContainer := &StepContainer{
-		bos: make([]Board, 0),
+		bos: make([]Board, 0, 81),
 		flag: utils.NewSet(map[interface{}]bool{}),
 	}
-	// stepContainer.flag = utils.NewSet(map[interface{}]bool{})
-
-
-	// stepContainer.bos[0] = NewBoard(sodu, 0)
+	stepContainer.bos = append(stepContainer.bos, *NewBoard(sodu, 0, stepContainer))
+	fmt.Println("stepContainer", stepContainer)
 	for index, value := range sodu{
 		if(value != 0){
 			stepContainer.flag.Add(index)
@@ -26,16 +25,30 @@ func NewStepContainer(sodu [81]int) *StepContainer{
 	return stepContainer
 }
 
-func (sc StepContainer) CanNextStep() bool{
-	index := len(sc.bos)
-	return sc.bos[index-1].Check(1)
+func (sc StepContainer) isInitData(index int) bool{
+	return sc.flag.Has(index)
 }
 
-func (sc StepContainer) NextStep(){
-	// index := len(sc.bos)
-	// sc.bos[index]
+func (sc StepContainer) appendBoard(board *Board){
+	sc.bos = append(sc.bos, *board)
+}
+
+func (sc StepContainer) NextStep() bool{
+	index := len(sc.bos)
+	fmt.Println("sc.bos[index-1]: ", sc.bos,index)
+	flag, board := sc.bos[index-1].Guess()
+	if(flag){
+		sc.appendBoard(board)
+	}
+	return flag
 }
 
 func (sc StepContainer) Before(){
-	
+	flag := len(sc.bos)-1
+	sc.bos = sc.bos[:len(sc.bos)-1]
+	fmt.Println(sc)
+	for ;sc.bos[flag].IsLast();{
+		flag--
+		sc.bos = sc.bos[:len(sc.bos)-1]
+	}
 }
