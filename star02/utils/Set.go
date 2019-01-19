@@ -2,7 +2,6 @@ package utils
 
 import(
 	"sync"
-	"fmt"
 )
 
 type Set struct{
@@ -10,6 +9,11 @@ type Set struct{
 	sync.RWMutex
 }
 
+func NewSet(m map[interface{}]bool) *Set{
+	return &Set{
+		m: m,
+	}
+}
 
 func (s *Set) Add(item int) {
 	s.Lock()
@@ -62,3 +66,4 @@ func New() *Set {
 		m: make(map[interface{}]bool, 0),
 	}
 }
+

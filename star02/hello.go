@@ -5,14 +5,13 @@ import (
 	// "go_code/star02/utils"
 )
 
-type ServerOption func()
-
-func (so ServerOption) demo01(){
-
-	fmt.Println("fuck")
-	
+type DD struct{
+	flag int
 }
 
+type Demo01 struct{
+	ia []int
+}
 
 func main() {
 	// val := [81]int{
@@ -31,6 +30,10 @@ func main() {
 
 	// num := utils.CheckPalace(val, 20, 2)
 	// fmt.Println(num)
-
+	arr := make([]int,4)
+	a := Demo01{ia: arr}
+	// a.ia[0] = 12
+	arr[0] = 12
+	fmt.Println(a)
 
 }
