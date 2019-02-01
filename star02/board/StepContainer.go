@@ -6,16 +6,17 @@ import (
 )
 
 type StepContainer struct{
-	bos []Board
+	bos *[]Board
 	flag *utils.Set
 }
 
 func NewStepContainer(sodu []int) *StepContainer{
+	bo := make([]Board, 0, 81)
 	stepContainer := &StepContainer{
-		bos: make([]Board, 0, 81),
+		bos: &bo,
 		flag: utils.NewSet(map[interface{}]bool{}),
 	}
-	stepContainer.bos = append(stepContainer.bos, *NewBoard(sodu, 0, stepContainer))
+	*stepContainer.bos = append(*stepContainer.bos, *NewBoard(sodu, 0, stepContainer))
 	fmt.Println("stepContainer", stepContainer)
 	for index, value := range sodu{
 		if(value != 0){
@@ -25,30 +26,29 @@ func NewStepContainer(sodu []int) *StepContainer{
 	return stepContainer
 }
 
-func (sc StepContainer) isInitData(index int) bool{
+func (sc *StepContainer) isInitData(index int) bool{
 	return sc.flag.Has(index)
 }
 
-func (sc StepContainer) appendBoard(board *Board){
-	sc.bos = append(sc.bos, *board)
+func (sc *StepContainer) appendBoard(board *Board){
+	*sc.bos = append(*sc.bos, *board)
 }
 
-func (sc StepContainer) NextStep() bool{
-	index := len(sc.bos)
-	fmt.Println("sc.bos[index-1]: ", sc.bos,index)
-	flag, board := sc.bos[index-1].Guess()
+func (sc *StepContainer) NextStep() bool{
+	index := len(*sc.bos)
+	
+	flag, board := (*sc.bos)[index-1].Guess()
 	if(flag){
 		sc.appendBoard(board)
 	}
 	return flag
 }
 
-func (sc StepContainer) Before(){
-	flag := len(sc.bos)-1
-	sc.bos = sc.bos[:len(sc.bos)-1]
-	fmt.Println(sc)
-	for ;sc.bos[flag].IsLast();{
+func (sc *StepContainer) Before(){
+	*sc.bos = (*sc.bos)[:len(*sc.bos)-1]
+	flag := len(*sc.bos)-1
+	for ;(*sc.bos)[flag].IsLast();{
 		flag--
-		sc.bos = sc.bos[:len(sc.bos)-1]
+		*sc.bos = (*sc.bos)[:len(*sc.bos)-1]
 	}
 }

@@ -63,8 +63,8 @@ func (bo Board) CheckPalace(checkName int) bool{
 	return false;
 }
 
-func (bo Board) Check(checkName int) bool{
-	return bo.CheckCell(checkName) &&  bo.CheckRow(checkName) &&  bo.CheckPalace(checkName)
+func (bo Board) NotCheck(checkName int) bool{
+	return !bo.CheckCell(checkName) && !bo.CheckRow(checkName) && !bo.CheckPalace(checkName)
 }
 
 func (bo Board) CopyBoard() *Board{
@@ -79,7 +79,7 @@ func (bo Board) CopyBoard() *Board{
 func (bo Board) Guess() (bool, *Board){
 	fmt.Println(bo)
 	for i:=bo.arr[bo.flag]+1; i<=9; i++ {
-		if(bo.Check(i)){
+		if(bo.NotCheck(i)){
 			copyBoard := bo.CopyBoard()
 			copyBoard.arr[bo.flag] = i
 			flag := bo.flag+1
@@ -95,7 +95,7 @@ func (bo Board) Guess() (bool, *Board){
 
 func (bo Board) IsLast() bool{
 	for i:=bo.arr[bo.flag]+1; i<=9; i++ {
-		if(bo.Check(i)){
+		if(bo.NotCheck(i)){
 			return true
 		}
 	}

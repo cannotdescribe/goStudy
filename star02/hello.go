@@ -38,7 +38,7 @@ func main() {
 	stepContainer := board.NewStepContainer(sudo)
 	
 	for i:=0;i<10;i++{
-		if(stepContainer.NextStep()){
+		if(!stepContainer.NextStep()){
 			stepContainer.Before()
 		}
 	}
