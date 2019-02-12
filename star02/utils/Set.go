@@ -26,6 +26,10 @@ func (s *Set) Remove(item int) {
 	s.Unlock()
 	delete(s.m, item)
 }
+
+func (s *Set) Size() int{
+	return len(s.m)
+}
   
 func (s *Set) Has(item int) bool {
 	s.RLock()

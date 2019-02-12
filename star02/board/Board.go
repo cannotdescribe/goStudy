@@ -1,7 +1,7 @@
 package board
 
 import (
-	"fmt"
+	"go_code/star02/utils"
 )
 
 type Board struct {
@@ -46,23 +46,24 @@ func (bo Board) CheckPalace(checkName int) bool{
 	initX := x/3 * 3
 	initY := y/3 * 3
 	for i:=0;i<3;i++{
-		if(bo.arr[x+initY*3 +initX +i] == checkName){
+		if(bo.arr[initY*9 +initX +i] == checkName){
 			return true;
 		}
 	}
 	for i:=0;i<3;i++{
-		if(bo.arr[x+(initY+1)*3 +initX +i] == checkName){
+		if(bo.arr[(initY+1)*9 +initX +i] == checkName){
 			return true;
 		}
 	}
 	for i:=0;i<3;i++{
-		if(bo.arr[x+(initY+2)*3 +initX +i] == checkName){
+		if(bo.arr[(initY+2)*9 +initX +i] == checkName){
 			return true;
 		}
 	}
 	return false;
 }
 
+//检车checkName是否允许被填写
 func (bo Board) NotCheck(checkName int) bool{
 	return !bo.CheckCell(checkName) && !bo.CheckRow(checkName) && !bo.CheckPalace(checkName)
 }
@@ -73,35 +74,46 @@ func (bo Board) CopyBoard() *Board{
 	return &Board{
 		arr: copyArray,
 		flag: bo.flag,
+		stepContainer: bo.stepContainer,
 	}
 }
 
-func (bo Board) Guess() (bool, *Board){
-	fmt.Println(bo)
+func (bo Board) Guess() bool{
 	for i:=bo.arr[bo.flag]+1; i<=9; i++ {
 		if(bo.NotCheck(i)){
-			copyBoard := bo.CopyBoard()
-			copyBoard.arr[bo.flag] = i
-			flag := bo.flag+1
-			for;bo.stepContainer.isInitData(flag);{
-				flag++
-			}
-			copyBoard.flag = flag
-			return true, copyBoard
-		}
-	}
-	return false, &bo
-}
-
-func (bo Board) IsLast() bool{
-	for i:=bo.arr[bo.flag]+1; i<=9; i++ {
-		if(bo.NotCheck(i)){
+			bo.arr[bo.flag] = i
 			return true
 		}
 	}
 	return false
 }
 
+//到最后了,到最后了无法进行猜测
+func (bo Board) IsLast(endWatch int) bool{
+	for i:=endWatch+1; i<=9; i++ {
+		if(bo.NotCheck(i)){
+			return false
+		}
+	}
+	return true
+}
+
 func (bo Board) getIndex() int{
 	return bo.flag
+}
+
+func (bo Board) LastValue() int{
+	return bo.arr[bo.flag]
+}
+
+func (bo Board) LastSecondValue(setFlag *utils.Set) (int, int){
+	flag := bo.flag-1
+	for ;setFlag.Has(flag); {
+		flag--
+	}
+	if flag == -1 {
+		return -1, -1
+	}else{
+		return flag, bo.arr[flag]
+	}
 }

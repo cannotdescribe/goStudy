@@ -2,7 +2,6 @@ package board
 
 import (
 	"go_code/star02/utils"
-	"fmt"
 )
 
 type StepContainer struct{
@@ -17,7 +16,6 @@ func NewStepContainer(sodu []int) *StepContainer{
 		flag: utils.NewSet(map[interface{}]bool{}),
 	}
 	*stepContainer.bos = append(*stepContainer.bos, *NewBoard(sodu, 0, stepContainer))
-	fmt.Println("stepContainer", stepContainer)
 	for index, value := range sodu{
 		if(value != 0){
 			stepContainer.flag.Add(index)
@@ -27,28 +25,62 @@ func NewStepContainer(sodu []int) *StepContainer{
 }
 
 func (sc *StepContainer) isInitData(index int) bool{
-	return sc.flag.Has(index)
+   	return sc.flag.Has(index)
 }
 
 func (sc *StepContainer) appendBoard(board *Board){
 	*sc.bos = append(*sc.bos, *board)
 }
 
+func (sc *StepContainer) appendCopyBoard(){
+	index := len(*sc.bos)
+	lastBoard := (*sc.bos)[index-1]
+
+	copyBoard := lastBoard.CopyBoard()
+
+	flag := lastBoard.flag+1
+	for;lastBoard.stepContainer.isInitData(flag);{
+		flag++
+	}
+	copyBoard.flag = flag
+
+	sc.appendBoard(copyBoard)
+}
+
 func (sc *StepContainer) NextStep() bool{
 	index := len(*sc.bos)
 	
-	flag, board := (*sc.bos)[index-1].Guess()
+	flag := (*sc.bos)[index-1].Guess()
 	if(flag){
-		sc.appendBoard(board)
+		sc.appendCopyBoard()
 	}
 	return flag
 }
 
-func (sc *StepContainer) Before(){
+func (sc *StepContainer) Before() bool{
+	lastEndFlag, endWatch := (*sc.bos)[len(*sc.bos)-1].LastSecondValue(sc.flag)
 	*sc.bos = (*sc.bos)[:len(*sc.bos)-1]
 	flag := len(*sc.bos)-1
-	for ;(*sc.bos)[flag].IsLast();{
+	if(lastEndFlag == -1){
+		return false
+	}
+	for ;flag>0 && (*sc.bos)[flag].IsLast(endWatch); {
 		flag--
+		lastEndFlag, endWatch = (*sc.bos)[len(*sc.bos)-1].LastSecondValue(sc.flag)
+		if(lastEndFlag == -1){
+			return false
+		}
 		*sc.bos = (*sc.bos)[:len(*sc.bos)-1]
 	}
+
+	return true
+}
+
+func (sc *StepContainer) EndBoard() []int{
+	return (*sc.bos)[len(*sc.bos)-1].arr
+}
+
+func (sc *StepContainer) End() bool{
+	flag := 81-sc.flag.Size()
+	return len(*sc.bos) == flag+1
 }
